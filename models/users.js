@@ -5,8 +5,7 @@ function UsersDb(){
         isUserExists,
         deleteUser,
         addUser,
-        getUserNamesArray,
-        getUsersArray,
+        getUserNamesList,
         getUser
     };
 
@@ -33,13 +32,10 @@ function UsersDb(){
     function addUser(user){
         users.push(user);
     }
-    function getUserNamesArray(){
+    function getUserNamesList(){
         return users.map((user)=>{
             return user.username
         })
-    }
-    function getUsersArray(){
-        return users;
     }
     function getUser(userName){
         return users.find((user)=>{

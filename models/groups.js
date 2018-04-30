@@ -5,8 +5,8 @@ function GroupsDb(){
         isGroupExists,
         deleteGroup,
         addGroup,
-        getGroupsNamesArray,
-        getGroupsArray,
+        getGroupsNamesList,
+        getGroupsList,
         getGroup
     };
 
@@ -33,13 +33,18 @@ function GroupsDb(){
     function addGroup(group){
         groups.push(group);
     }
-    function getGroupsNamesArray(){
+    function getGroupsNamesList(){
         return groups.map((group)=>{
             return group.name
         })
     }
-    function getGroupsArray(){
-        return groups;
+    function getGroupsList(){
+        return groups.map((group)=>{
+            return {
+                name : group.name,
+                users : group.getGroupUsersArray()
+            };
+        });
     }
     function getGroup(groupName){
         return groups.find((group)=>{

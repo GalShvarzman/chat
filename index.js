@@ -211,11 +211,9 @@ function exitChat(){
 
 function deleteUser(){
     rl.question('enter the username you want to delete\n', (name)=>{
-        const usersArray = usersDb.getUsersArray();
-        if(usersArray.length){
             if(usersDb.isUserExists(name)){
-                const groupsArray = groupsDb.getGroupsArray();
-                groupsArray.forEach((group)=>{
+                const groupsList = groupsDb.getGroupsList();
+                groupsList.forEach((group)=>{
                     if(group.isUserExistsInGroup(name)){
                         group.deleteUserFromGroup(name);
                     }
@@ -229,16 +227,13 @@ function deleteUser(){
                 console.log("User does not exist");
                 whatDoYouWantToDoNext();
             }
-        }
-        console.log("The list is empty");
-        whatDoYouWantToDoNext();
     });
 }
 
 function printUsersList(){
-    const userNamesArray = usersDb.getUserNamesArray();
-    if(userNamesArray.length){
-        userNamesArray.forEach((username, i)=>{
+    const userNamesList = usersDb.getUserNamesList();
+    if(userNamesList.length){
+        userNamesList.forEach((username, i)=>{
             console.log(`#${i+1} ${username}`);
         });
         whatDoYouWantToDoNext();
@@ -249,10 +244,9 @@ function printUsersList(){
 }
 
 function printGroupsList(){
-    const groupsArray = groupsDb.getGroupsArray();
-    if(groupsArray.length){
-        const groupsNamesArray = groupsDb.getGroupsNamesArray();
-        groupsNamesArray.forEach((groupName, i)=>{
+    const groupsNamesList = groupsDb.getGroupsNamesList();
+    if(groupsNamesList.length){
+        groupsNamesList.forEach((groupName, i)=>{
             console.log(`#${i+1} ${groupName}`);
         });
         whatDoYouWantToDoNext();
@@ -263,15 +257,20 @@ function printGroupsList(){
 }
 
 function printListOfGroupsAndUsersUnderEachGroup(){
-    let groupsArray = groupsDb.getGroupsArray();
-    groupsArray.forEach((group)=>{
-        console.log(group.name);
-        const groupUsers = group.getGroupUsersArray();
-        groupUsers.forEach((user)=>{
-            console.log(`\t${user.username}(${user.age})`);
-        })
-    });
-    whatDoYouWantToDoNext();
+    let groupsList = groupsDb.getGroupsList();
+    if(groupsList.length){
+        groupsList.forEach((group)=>{
+            console.log(group.name);
+            group.users.forEach((user)=>{
+                console.log(`\t${user.username}(${user.age})`);
+            });
+        });
+        whatDoYouWantToDoNext();
+    }
+    else{
+        console.log("Groups list is empty");
+        whatDoYouWantToDoNext();
+    }
 }
 
 function createNewGroup(){
@@ -290,18 +289,16 @@ function createNewGroup(){
 
 function deleteGroup(){
     rl.question('enter the name of the group you want to delete\n', (name)=>{
-        let groupsArray = groupsDb.getGroupsArray();
-        if(groupsArray.length){
+        if(groupsDb.isGroupExists(name)){
             if(groupsDb.deleteGroup(name)){
                 console.log("Group deleted successfully");
                 whatDoYouWantToDoNext();
-                return;
             }
+        }
+        else {
             console.log("Group does not exist");
             whatDoYouWantToDoNext();
         }
-        console.log("The list is empty");
-        whatDoYouWantToDoNext();
     });
 }
 

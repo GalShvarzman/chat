@@ -38,7 +38,9 @@ function Group(name){
         return false;
     }
     function getGroupUsersArray(){
-        return users;
+        return users.map((user)=>{
+            return user
+        });
     }
 }
 
