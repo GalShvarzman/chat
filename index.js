@@ -213,20 +213,22 @@ function deleteUser(){
     rl.question('enter the username you want to delete\n', (name)=>{
         const usersArray = usersDb.getUsersArray();
         if(usersArray.length){
-            let groupsArray = groupsDb.getGroupsArray();
-            groupsArray.forEach((group)=>{
-                if(group.isUserExistsInGroup(name)){
-                    group.deleteUserFromGroup(name);
+            if(usersDb.isUserExists(name)){
+                const groupsArray = groupsDb.getGroupsArray();
+                groupsArray.forEach((group)=>{
+                    if(group.isUserExistsInGroup(name)){
+                        group.deleteUserFromGroup(name);
+                    }
+                });
+                if(usersDb.deleteUser(name)){
+                    console.log("User deleted successfully");
+                    whatDoYouWantToDoNext();
                 }
-            });
-            //fix the order.
-            if(usersDb.deleteUser(name)){
-                console.log("User deleted successfully");
-                whatDoYouWantToDoNext();
-                return;
             }
-            console.log("User does not exist");
-            whatDoYouWantToDoNext();
+            else{
+                console.log("User does not exist");
+                whatDoYouWantToDoNext();
+            }
         }
         console.log("The list is empty");
         whatDoYouWantToDoNext();
