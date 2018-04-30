@@ -4,7 +4,6 @@ function Group(name){
     return{
         name,
         setName,
-        findUserInGroupIndex,
         isUserExistsInGroup,
         addUserToGroup,
         deleteUserFromGroup,
