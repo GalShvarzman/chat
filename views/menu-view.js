@@ -11,6 +11,10 @@ function RootMenu(callback, question) {
     })
 }
 
+function exitChat() {
+    rl.close();
+}
+
 function waitForAnAnswer(answer, callback, func){
     if (!answer) {
         console.log('Well, I need an answer..');
@@ -25,5 +29,6 @@ function sendMessage(message){
 
 module.exports = {
     RootMenu,
-    sendMessage
+    sendMessage,
+    exitChat
 };

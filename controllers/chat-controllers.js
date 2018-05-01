@@ -198,20 +198,24 @@ function ChatController(){
 
     function exitChat(){
         MenuView.RootMenu((answer)=>{
-            if(answer === 'y'){
-                rl.close();
+            if(answer === 'Y'){
+                MenuView.exitChat();
             }
-            else if(answer === 'n'){
+            else if(answer === 'N'){
                 sendMessage("We're glad you stayed with us");
                 mainMenu();
             }
-        }, "Are you sure you want to exit? [y]es / [n]o");
+        }, "Are you sure you want to exit? [Y]es / [N]o");
     }
 
     function getUsernameAndGroupName(action) {
         let username, groupName;
         MenuView.RootMenu((name)=>{
             username = name;
+            getGroupName();
+        }, "Enter a username");
+
+        function getGroupName(){
             MenuView.RootMenu((name)=>{
                 groupName = name;
                 if(action === "add") {
@@ -221,7 +225,7 @@ function ChatController(){
                     deleteUserFromGroup(username, groupName);
                 }
             }, "Enter a group name");
-        }, "Enter a username");
+        }
     }
 
     function addUserToGroup(username, groupName){
@@ -272,15 +276,19 @@ function ChatController(){
             if(usersDb.isUserExists(username)){
                 selectedUser = usersDb.getUser(username);
                 age = selectedUser.age;
-                MenuView.RootMenu((newAge)=>{
-                    updateAge(newAge);
-                }, "Enter the user new age");
+                getUserNewAge();
             }
             else{
                 sendMessage(`${username} do not exists`);
                 mainMenu();
             }
         }, "Enter the name of the user you want to edit");
+
+        function getUserNewAge(){
+            MenuView.RootMenu((newAge)=>{
+                updateAge(newAge);
+            }, "Enter the user new age");
+        }
 
         function updateAge(newAge){
             if(newAge !== age){
@@ -298,19 +306,23 @@ function ChatController(){
     function updateUserPassword(){
         let username, selectedUser, passwordInDb;
         MenuView.RootMenu((name)=>{
-            username = name;
-            if(usersDb.isUserExists(username)){
+            if(usersDb.isUserExists(name)){
+                username = name;
                 selectedUser = usersDb.getUser(username);
                 passwordInDb = selectedUser.password;
-                MenuView.RootMenu((oldPassword)=>{
-                    verifyOldPassword(oldPassword);
-                }, "Enter the user old password");
+                getUserOldPassword();
             }
             else{
                 sendMessage(`${username} do not exists`);
                 mainMenu();
             }
         }, "Enter the name of the user you want to edit");
+
+        function getUserOldPassword(){
+            MenuView.RootMenu((oldPassword)=>{
+                verifyOldPassword(oldPassword);
+            }, "Enter the user old password");
+        }
 
         function verifyOldPassword(oldPassword){
             if(oldPassword === passwordInDb){
