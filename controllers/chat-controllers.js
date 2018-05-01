@@ -25,7 +25,11 @@ function ChatController(){
         init
     };
 
-    function init (){
+    function init(){
+        mainMenu();
+    }
+
+    function mainMenu (){
         MenuView.RootMenu((answer)=>{
             switch (answer) {
                 case 'NU':
@@ -66,7 +70,7 @@ function ChatController(){
                     break;
                 default:
                     sendMessage('We did not understand your request');
-                    init();
+                    mainMenu();
                     break;
             }
         }, mainQuestion);
@@ -74,57 +78,57 @@ function ChatController(){
 
     function createNewUser() {
         let username, age, password;
-        MenuView.RootMenu((answer) => {
-            if (usersDb.isUserExists(answer)) {
+        MenuView.RootMenu((name) => {
+            if (usersDb.isUserExists(name)) {
                 sendMessage("username already exist. enter a different username");
                 createNewUser();
             }
             else{
-                username = answer;
+                username = name;
                 getUserAge();
             }
         }, "Enter a username");
         function getUserAge(){
-            MenuView.RootMenu((answer)=>{
-                age = answer;
+            MenuView.RootMenu((userAge)=>{
+                age = userAge;
                 getUserPassword();
             }, "What is your age?")
         }
         function getUserPassword(){
-            MenuView.RootMenu((answer)=>{
-                password = answer;
+            MenuView.RootMenu((userPassword)=>{
+                password = userPassword;
                 usersDb.addUser(new User(username, age, password));
                 sendMessage("User created successfully!");
-                init();
+                mainMenu();
             }, "Select a password")
         }
     }
 
     function deleteGroup(){
-        MenuView.RootMenu((answer)=>{
-            if(groupsDb.isGroupExists(answer)){
-                if(groupsDb.deleteGroup(answer)){
+        MenuView.RootMenu((groupName)=>{
+            if(groupsDb.isGroupExists(groupName)){
+                if(groupsDb.deleteGroup(groupName)){
                     sendMessage("Group deleted successfully");
-                    init();
+                    mainMenu();
                 }
                 else {
                     sendMessage("Group does not exist");
-                    init();
+                    mainMenu();
                 }
             }
         }, "Enter the name of the group you want to delete")
     }
 
     function createNewGroup(){
-        MenuView.RootMenu((answer)=>{
-            if(groupsDb.isGroupExists(answer)){
+        MenuView.RootMenu((groupName)=>{
+            if(groupsDb.isGroupExists(groupName)){
                 sendMessage("This name already exists, choose a different name");
                 createNewGroup();
                 return;
             }
-            groupsDb.addGroup(new Group(answer));
+            groupsDb.addGroup(new Group(groupName));
             sendMessage("Group created successfully");
-            init();
+            mainMenu();
         }, "Enter a name for the group")
     }
 
@@ -137,11 +141,11 @@ function ChatController(){
                    sendMessage(`\t${user.username}(${user.age})`);
                });
            });
-           init();
+           mainMenu();
        }
        else{
            sendMessage("Groups list is empty");
-           init();
+           mainMenu();
        }
    }
 
@@ -151,11 +155,11 @@ function ChatController(){
             groupsNamesList.forEach((groupName, i)=>{
                 sendMessage(`#${i+1} ${groupName}`);
             });
-            init();
+            mainMenu();
             return;
         }
         sendMessage("The list is empty");
-        init();
+        mainMenu();
     }
 
     function printUsersList() {
@@ -164,11 +168,11 @@ function ChatController(){
             userNamesList.forEach((username, i)=>{
                 sendMessage(`#${i+1} ${username}`);
             });
-            init();
+            mainMenu();
             return;
         }
         sendMessage("The list is empty");
-        init();
+        mainMenu();
     }
 
     function deleteUser(){
@@ -182,12 +186,12 @@ function ChatController(){
                 });
                 if(usersDb.deleteUser(name)){
                     sendMessage("User deleted successfully");
-                    init();
+                    mainMenu();
                 }
             }
             else{
                 sendMessage("User does not exist");
-                init();
+                mainMenu();
             }
         }, "Enter the name of the user you want to delete")
     }
@@ -199,17 +203,17 @@ function ChatController(){
             }
             else if(answer === 'n'){
                 sendMessage("We're glad you stayed with us");
-                init();
+                mainMenu();
             }
         }, "Are you sure you want to exit? [y]es / [n]o");
     }
 
     function getUsernameAndGroupName(action) {
         let username, groupName;
-        MenuView.RootMenu((answer)=>{
-            username = answer;
-            MenuView.RootMenu((answer)=>{
-                groupName = answer;
+        MenuView.RootMenu((name)=>{
+            username = name;
+            MenuView.RootMenu((name)=>{
+                groupName = name;
                 if(action === "add") {
                     addUserToGroup(username, groupName);
                 }
@@ -225,17 +229,17 @@ function ChatController(){
             const selectedGroup = groupsDb.getGroup(groupName);
             if(selectedGroup.isUserExistsInGroup(username)){
                 sendMessage('User already exists in this group');
-                init();
+                mainMenu();
                 return;
             }
             const selectedUser = usersDb.getUser(username);
             selectedGroup.addUserToGroup(selectedUser);
             sendMessage(`${username} added successfully to group ${groupName}`);
-            init();
+            mainMenu();
         }
         else{
             sendMessage("User or group does not exist");
-            init();
+            mainMenu();
         }
     }
 
@@ -244,20 +248,20 @@ function ChatController(){
             const selectedGroup = groupsDb.getGroup(groupName);
             if(!selectedGroup.isUserExistsInGroup(username)){
                 sendMessage('User do not exists in this group');
-                init();
+                mainMenu();
                 return;
             }
             else if(selectedGroup.deleteUserFromGroup(username)){
                 sendMessage(`${username} deleted successfully from group ${groupName}`);
-                init();
+                mainMenu();
                 return
             }
             sendMessage("Something went wrong, try again");
-            init();
+            mainMenu();
         }
         else{
             sendMessage("User or group does not exist");
-            init();
+            mainMenu();
         }
     }
 
@@ -274,7 +278,7 @@ function ChatController(){
             }
             else{
                 sendMessage(`${username} do not exists`);
-                init();
+                mainMenu();
             }
         }, "Enter the name of the user you want to edit");
 
@@ -282,11 +286,11 @@ function ChatController(){
             if(newAge !== age){
                 selectedUser.setAge(newAge);
                 sendMessage(`${selectedUser.username} age updated from ${age} to ${newAge}`);
-                init();
+                mainMenu();
             }
             else{
                 sendMessage(`The age is already set to ${newAge}`);
-                init();
+                mainMenu();
             }
         }
     }
@@ -304,7 +308,7 @@ function ChatController(){
             }
             else{
                 sendMessage(`${username} do not exists`);
-                init();
+                mainMenu();
             }
         }, "Enter the name of the user you want to edit");
 
@@ -316,14 +320,14 @@ function ChatController(){
             }
             else{
                 sendMessage("The password does not match the previous password");
-                init();
+                mainMenu();
             }
         }
 
         function updatePassword(newPassword){
             selectedUser.setPassword(newPassword);
             sendMessage(`${selectedUser.username}'s password was updated successfully`);
-            init();
+            mainMenu();
         }
     }
 
