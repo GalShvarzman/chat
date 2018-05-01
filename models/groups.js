@@ -6,8 +6,9 @@ function GroupsDb(){
         deleteGroup,
         addGroup,
         getGroupsNamesList,
-        getGroupsList,
-        getGroup
+        getGroupsListForPrint,
+        getGroup,
+        getGroups
     };
 
     function findGroupIndex(groupName){
@@ -38,17 +39,22 @@ function GroupsDb(){
             return group.name
         })
     }
-    function getGroupsList(){
+    function getGroupsListForPrint(){
         return groups.map((group)=>{
             return {
                 name : group.name,
-                users : group.getGroupUsersArray()
+                users : group.getGroupUsersList()
             };
         });
     }
     function getGroup(groupName){
         return groups.find((group)=>{
             return group.name === groupName;
+        })
+    }
+    function getGroups() {
+        return groups.map((group)=>{
+            return group
         })
     }
 }

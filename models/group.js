@@ -7,7 +7,7 @@ function Group(name){
         isUserExistsInGroup,
         addUserToGroup,
         deleteUserFromGroup,
-        getGroupUsersArray
+        getGroupUsersList
     };
 
     function setName(otherName){
@@ -36,7 +36,7 @@ function Group(name){
         }
         return false;
     }
-    function getGroupUsersArray(){
+    function getGroupUsersList(){
         return users.map((user)=>{
             return user
         });
