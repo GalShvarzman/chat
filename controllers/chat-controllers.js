@@ -211,25 +211,37 @@ function ChatController(){
     function getUsernameAndGroupName(action) {
         let username, groupName;
         MenuView.RootMenu((name)=>{
-            username = name;
-            getGroupName();
+            if(usersDb.isUserExists(name)){
+                username = name;
+                getGroupName();
+            }
+            else{
+                sendMessage("User does not exist");
+                mainMenu();
+            }
         }, "Enter a username");
 
         function getGroupName(){
             MenuView.RootMenu((name)=>{
-                groupName = name;
-                if(action === "add") {
-                    addUserToGroup(username, groupName);
+                if(groupsDb.isGroupExists(name)){
+                    groupName = name;
+                    if(action === "add") {
+                        addUserToGroup(username, groupName);
+                    }
+                    else if(action === "delete"){
+                        deleteUserFromGroup(username, groupName);
+                    }
                 }
-                else if(action === "delete"){
-                    deleteUserFromGroup(username, groupName);
+                else{
+                    sendMessage("Group does not exist");
+                    mainMenu();
                 }
             }, "Enter a group name");
         }
     }
 
     function addUserToGroup(username, groupName){
-        if(usersDb.isUserExists(username) && groupsDb.isGroupExists(groupName)){
+        try{
             const selectedGroup = groupsDb.getGroup(groupName);
             if(selectedGroup.isUserExistsInGroup(username)){
                 sendMessage('User already exists in this group');
@@ -241,31 +253,25 @@ function ChatController(){
             sendMessage(`${username} added successfully to group ${groupName}`);
             mainMenu();
         }
-        else{
-            sendMessage("User or group does not exist");
-            mainMenu();
+        catch(err){
+            console.error("Something went wrong : " + err.message);
         }
     }
 
     function deleteUserFromGroup(username, groupName){
-        if(usersDb.isUserExists(username) && groupsDb.isGroupExists(groupName)) {
+        try{
             const selectedGroup = groupsDb.getGroup(groupName);
             if(!selectedGroup.isUserExistsInGroup(username)){
-                sendMessage('User do not exists in this group');
+                sendMessage('User do not exist in this group');
                 mainMenu();
-                return;
             }
             else if(selectedGroup.deleteUserFromGroup(username)){
                 sendMessage(`${username} deleted successfully from group ${groupName}`);
                 mainMenu();
-                return
             }
-            sendMessage("Something went wrong, try again");
-            mainMenu();
         }
-        else{
-            sendMessage("User or group does not exist");
-            mainMenu();
+        catch(err){
+            console.error("Something went wrong : " + err.message);
         }
     }
 
