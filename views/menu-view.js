@@ -27,8 +27,13 @@ function sendMessage(message){
     console.log(message);
 }
 
+function sendErrorMessage(message){
+    console.error(message);
+}
+
 module.exports = {
     RootMenu,
     sendMessage,
-    exitChat
+    exitChat,
+    sendErrorMessage
 };
